@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Articles{% endblock %}
+
+{% block body %}
+    <h1 class="text-center my-4">Les Articles</h1>
+    <div class="container text-center px-4">
+        <section class="row gx-4 gy-3">
+            {# ! for valeur in (objet ou tableau) #}
+            {% for article in articles %}
+            <div class="col-md-3">
+                <div class="card border-primary">
+                    <div class="card-header">{{ article.title }}</div>
+                    <div class="card-body text-center">
+                        <img class="img-fluid" src="{{ article.image }}" alt="">
+                        {# * le filtre raw permet d'interprété les balises HTML #}
+                        {{ article.content|raw }}
+                        <p>Ecrit le {{ article.createdAt|date('d/m/Y à H:i:s') }}</p>
+                        <div class="text-center">
+                            <a href=" {{ path('blog_show', {id: article.id} ) }}" class="btn btn-primary">voir plus</a>
+                        </div>
+                    </div>
+                </div>
+            
+            </div>
+            {% endfor %}
+        </section>
+    </div>
+{% endblock %}
