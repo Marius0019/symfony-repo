@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Entity\Comment;
 use App\Form\ArticleType;
+use App\Form\CommentType;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,55 +39,37 @@ class BlogController extends AbstractController
         //* l'indice étant le nom de la variable dans le fichier twig et valeur sa valeur réel
     }
 
-    #[Route('/blog/modifier/{id}', name:"blog_modifier")]
-    #[Route('/blog/ajout', name:"blog_ajout")]
-    public function form(Request $globals, EntityManagerInterface $manager, Article $article = null ) : Response
-    {
-        // dd($article);
-        if($article == null)
-        {
-            $article =  new Article ;
-        }
-        //  dd($article);
-        $form = $this->createForm(ArticleType::class, $article);
+    
 
-        $form->handleRequest($globals);
-        // * handleRequest() permet de récupérer tout les données de mes inputs
-        if($form->isSubmitted() && $form->isValid())
-        {
-            // dd($globals->request);
-            // $article->setTitle('un titre');
-            $article->setCreatedAt(new \Datetime);
-            // dd($article);
-            //*persist() va permettre de préparer ma requete SQL a envoyer par rapport a l'objet donné en argument
-            $manager->persist($article);
-            //* flush() permettre d'executer tout les persist précédent
-            $manager->flush();
-            //* redirectToRoute() permet de rediriger vers une autre page de notre site a l'aide du nom de la route (name)
-            return $this->redirectToRoute('blog_gestion');
-        }
-        
-        return $this->render('blog/form.html.twig', [
-            'formArticle' => $form,
-            'editMode' => $article->getId() !== null
-        ]);
-    }
-
-    #[Route('/blog/gestion', name:'blog_gestion')]
-    public function gestion(ArticleRepository $repo) : Response
-    {
-        $articles = $repo->findAll();
-        return $this->render('blog/gestion.html.twig', [
-            'articles' => $articles,
-        ]);
-    }
+    
 
     #[Route('/blog/show/{id}', name:"blog_show")]
-    public function show($id, ArticleRepository $repo)
+    public function show($id, ArticleRepository $repo, Request $rq, EntityManagerInterface $manager)
     {
         $article = $repo->find($id) ;
+
+        // ! formulaire commentaire
+
+        $commentaire = new Comment;
+        $form = $this->createForm(CommentType::class, $commentaire);
+        $form->handleRequest($rq);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $commentaire->setCreatedAt(new \Datetime)
+                        ->setArticle($article)
+                        ->setUser($this->getUser());
+            //! $this->getUser() permet de récupérer l'utilisateur connecté
+            $manager->persist($commentaire);
+            $manager->flush();
+            //!ajouter un message en session
+            $this->addFlash('success', "votre commentaire a bien été pris en compte");
+            return $this->redirectToRoute('blog_show', ['id' => $id]);
+        }
+        // dd($article);
         return $this->render('blog/show.html.twig', [
             'article' => $article,
+            'comment' => $form
         ]);
     }
     /**
@@ -103,14 +87,7 @@ class BlogController extends AbstractController
      *      * on va déclarer dans la méthode en paramètre l'entity que l'on veut récupérer
      *      ! public function nomFonction(MonEntity $monEntity)
      * 
-     */  
+     */     
 
-    #[Route('/blog/supprimer/{id}', name:"blog_supprimer")]
-    public function supprimer(Article $article, EntityManagerInterface $manager)
-    {
-        $manager->remove($article);
-        $manager-> flush();    
-        return $this->redirectToRoute('blog_gestion');
-    }
+    
 }
-

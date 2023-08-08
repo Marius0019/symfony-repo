@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Voiture;
 use App\Form\VoitureType;
-use App\Repository\VoituresRepository;
+use App\Repository\VoitureRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,15 +14,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class VoitureController extends AbstractController
 {
     #[Route('/voiture', name: 'voiture')]
-    public function index(VoituresRepository $repo): Response
-
+    public function index(VoitureRepository $repo): Response
     {
         $voitures = $repo->findAll();
         return $this->render('voiture/index.html.twig', [
-            'items' =>  $voitures
+            'items' => $voitures,
         ]);
-      
-
     }
 
     #[Route('/voiture/ajout', name:'voiture_ajout')]

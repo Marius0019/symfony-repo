@@ -14,7 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method VoituresPhp[]    findAll()
  * @method VoituresPhp[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class VoituresRepository extends ServiceEntityRepository
+class VoitureRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

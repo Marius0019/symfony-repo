@@ -12,6 +12,48 @@
             <p>{{  article.createdAt|date('d/m/Y à H:i:s') }}</p>
         </div>
     </div>
-    </div>
+    
 
+    <hr>
+
+    {% if app.user %}
+    
+    
+    <div class="container my-4 border border-primary p-4">
+    <h2 class="text-center my-4">Ajoutez votre commentaire</h2>
+        {{ form_start(comment) }}
+
+            {{ form_row(comment.content, {
+                label: "votre commentaire"
+            }) }}
+            <button class="btn btn-primary my-2">Envoyez</button>
+
+        {{ form_end(comment)}}
+    </div>
+    {% else %}
+
+    <p class="text-center my-2">Connectez-vous <a href="{{ path('app_login') }}">ici</a> pour ajouter un commentaire</p>
+
+    {% endif %}
+
+    <h2 class="text-center my-2">Commentaires</h2>
+    <table class="table table-light table-sm">
+        <thead>
+            <tr>
+                <th class="col-3">Utilisateur/Date</th>
+                <th class="col-9">Commentaires</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for comment in article.comments %}
+                <tr>
+                    <td>{{ comment.user.firstname }} <br> {{ comment.createdAt|date('d/m/Y à  H:i:s') }}</td>
+                    <td>{{ comment.content }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    </div>
 {% endblock %}

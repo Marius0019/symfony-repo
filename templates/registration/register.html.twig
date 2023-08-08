@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+<div class="container mx-auto w-50 border border-primary rounded mt-3 p-4">
+    <h1 class="text-center my-3">Inscription</h1>
+
+    {{ form_errors(registrationForm) }}
+
+    {{ form_start(registrationForm, {
+        attr: {
+            novalidate : 'novalidate'
+        }
+    }) }}
+        <div class="row"> 
+            <div class="col-6">{{ form_row(registrationForm.firstname, {
+                label: "Prénom"
+            }) }}</div>
+            <div class="col-6">{{ form_row(registrationForm.lastname, {
+                label: "Nom"
+            }) }}</div>
+            <div class="col-6">{{ form_row(registrationForm.zipcode, {
+                label: "Code postal"
+            }) }}</div>
+            <div class="col-6"> {{ form_row(registrationForm.city, {
+                label: "Ville"
+            }) }}</div>
+        </div>
+        {{ form_row(registrationForm.email) }}
+        {{ form_row(registrationForm.plainPassword) }}
+        {# {{ form_row(registrationForm.agreeTerms) }} #}
+
+        <button type="submit" class="btn btn-outline-primary col-12">inscription</button>
+    {{ form_end(registrationForm) }}
+</div>
+{% endblock %}
+
+

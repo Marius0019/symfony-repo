@@ -3,8 +3,9 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.1/lux/bootstrap.min.css" integrity="sha512-AEz+khxSceaCAGjFlMVVP44z6/Wn0VAE2Q5aSpQR7tHORYsYP2vzU7W3OSvncmYZOX82xCJYd4bq/0iR+Qp9fw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
         {% block stylesheets %}
         {% endblock %}
         {% block javascripts %}
@@ -13,7 +14,8 @@
     <body>
         <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Navbar</a>
+    <a class="navbar-brand" href="{{ path('home') }}" ><img src="{{ asset('img/img_blog') }}" alt="">Blog</a>
+    <img src="" alt="">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -30,6 +32,8 @@
         <li class="nav-item">
           <a class="nav-link" href="{{ path('voiture') }}">Voitures</a>
         </li>
+
+         {% if is_granted('ROLE_ADMIN') %}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">BackOffice</a>
           <div class="dropdown-menu">
@@ -38,14 +42,23 @@
             <a class="dropdown-item" href="{{ path('voiture_ajout') }}">Gestion des voitures</a>
           </div>
         </li>
+        {% endif %}
+
       </ul>
-      <form class="d-flex">
-        <input class="form-control me-sm-2" type="search" placeholder="Search">
-        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-      </form>
+      {% if app.user %}
+      <a href="{{ path('app_logout')}}" class="btn btn-outline-danger"><i class="bi bi-person-x"></i></a>
+      {% else %}
+      <a href="{{ path('app_register')}}" class="btn btn-outline-info me-3"><i class="bi bi-person-plus"></i></a>
+      <a href="{{ path('app_login')}}" class="btn btn-outline-light"><i class="bi bi-person-fill"></i></a>
+      {% endif %}
     </div>
   </div>
 </nav>
+
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success text-center my-2"> {{ message }} </div>
+{% endfor %}
+
         {% block body %}{% endblock %}
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
     </body>
